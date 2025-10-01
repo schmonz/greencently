@@ -19,7 +19,7 @@ jobs:
         uses: crftd-tech/trunkver@main
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v5
 
       # When changing this sequence, sync with TESTING.md
 
