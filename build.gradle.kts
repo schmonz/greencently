@@ -4,7 +4,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "2.2.20"
+    kotlin("jvm") version "2.2.21"
     jacoco
     id("com.github.ben-manes.versions") version "0.53.0"
     id("io.gitlab.arturbosch.detekt") version "1.23.8"
