@@ -6,7 +6,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     kotlin("jvm") version "2.4.10"
     jacoco
-    id("com.github.ben-manes.versions") version "0.56.0"
+    id("com.github.ben-manes.versions") version "0.57.0"
     id("io.gitlab.arturbosch.detekt") version "1.23.8"
 
     // publishing
