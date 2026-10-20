@@ -16,17 +16,17 @@ plugins {
     id("io.github.gradle-nexus.publish-plugin") version "2.0.0"
 }
 
-kotlin {
-    jvmToolchain(8)
-}
-
 repositories {
     mavenCentral()
 }
 
 dependencies {
     // JUnit 5 test discovery
-    implementation("org.junit.platform:junit-platform-launcher:6.1.3")
+    implementation("org.junit.platform:junit-platform-launcher:1.10.5")
+
+    testImplementation(platform("org.junit:junit-bom:5.10.5"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.8")
 }

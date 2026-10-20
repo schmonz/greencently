@@ -5,17 +5,13 @@ plugins {
     kotlin("jvm") version "2.4.21"
 }
 
-kotlin {
-    jvmToolchain(8)
-}
-
 repositories {
     mavenCentral()
     mavenLocal()
 }
 
 dependencies {
-    testImplementation(platform("org.junit:junit-bom:6.1.3"))
+    testImplementation(platform("org.junit:junit-bom:5.10.5"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
