@@ -3,6 +3,8 @@ name: Build and Publish
 on:
   push:
     branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -42,6 +44,7 @@ jobs:
         run: ./gradlew -Pversion=${{ steps.trunkver.outputs.trunkver }} assemble
 
       - name: release
+        if: github.event_name != 'pull_request'
         env:
           ORG_GRADLE_PROJECT_sonatypeUsername: ${{ secrets.CENTRAL_TOKEN_USERNAME }}
           ORG_GRADLE_PROJECT_sonatypePassword: ${{ secrets.CENTRAL_TOKEN_PASSWORD }}

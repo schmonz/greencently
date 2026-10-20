@@ -4,5 +4,21 @@
     "config:recommended"
   ],
   "automerge": true,
-  "ignoreTests": true
+  "packageRules": [
+    {
+      "matchPackagePatterns": [
+        "^org\\.junit\\.platform:"
+      ],
+      "allowedVersions": "<1.11.0"
+    },
+    {
+      "matchPackagePatterns": [
+        "^org\\.junit($|\\.)"
+      ],
+      "excludePackagePatterns": [
+        "^org\\.junit\\.platform:"
+      ],
+      "allowedVersions": "<5.11.0"
+    }
+  ]
 }
