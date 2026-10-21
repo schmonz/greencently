@@ -45,7 +45,7 @@ tasks.withType<JavaCompile>().configureEach {
 
 tasks.withType<KotlinCompile>().configureEach {
     compilerOptions {
-        freeCompilerArgs.add("-Xjsr305=strict")
+        freeCompilerArgs.addAll("-Xjsr305=strict", "-Xjdk-release=8")
         jvmTarget.set(JvmTarget.JVM_1_8)
     }
 }
@@ -75,6 +75,9 @@ tasks.check {
 
 tasks.withType<Test>().configureEach {
     useJUnitPlatform()
+    javaLauncher.set(javaToolchains.launcherFor {
+        languageVersion.set(JavaLanguageVersion.of(8))
+    })
 }
 
 tasks.withType<DependencyUpdatesTask> {

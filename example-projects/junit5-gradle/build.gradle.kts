@@ -24,12 +24,15 @@ tasks.withType<JavaCompile>().configureEach {
 
 tasks.withType<KotlinCompile>().configureEach {
     compilerOptions {
-        freeCompilerArgs.add("-Xjsr305=strict")
-        kotlin.compilerOptions.jvmTarget = JvmTarget.JVM_1_8
+        freeCompilerArgs.addAll("-Xjsr305=strict", "-Xjdk-release=8")
+        jvmTarget.set(JvmTarget.JVM_1_8)
     }
 }
 
-tasks.withType<Test> {
+tasks.withType<Test>().configureEach {
     useJUnitPlatform()
+    javaLauncher.set(javaToolchains.launcherFor {
+        languageVersion.set(JavaLanguageVersion.of(8))
+    })
     environment("SET_NON_EMPTY_TO_FAIL_TEST_ONE", project.findProperty("setNonEmptyToFailTestOne") ?: "")
 }
