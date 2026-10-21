@@ -6,8 +6,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     kotlin("jvm") version "2.4.21"
     jacoco
-    id("com.github.ben-manes.versions") version "0.66.0"
-    id("io.gitlab.arturbosch.detekt") version "1.23.8"
+    id("io.github.ben-manes.versions") version "0.66.0"
+    id("io.gitlab.arturbosch.detekt") version "1.23.8" apply false
 
     // publishing
     `java-library`
@@ -20,6 +20,13 @@ repositories {
     mavenCentral()
 }
 
+val detektCli = configurations.create("detektCli") {
+    isCanBeConsumed = false
+}
+val detektPlugins = configurations.create("detektPlugins") {
+    isCanBeConsumed = false
+}
+
 dependencies {
     // JUnit 5 test discovery
     implementation("org.junit.platform:junit-platform-launcher:1.10.5")
@@ -28,6 +35,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
+    detektCli("io.gitlab.arturbosch.detekt:detekt-cli:1.23.8")
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.8")
 }
 
@@ -38,11 +46,20 @@ tasks.withType<JavaCompile>().configureEach {
 tasks.withType<KotlinCompile>().configureEach {
     compilerOptions {
         freeCompilerArgs.add("-Xjsr305=strict")
-        kotlin.compilerOptions.jvmTarget = JvmTarget.JVM_1_8
+        jvmTarget.set(JvmTarget.JVM_1_8)
     }
 }
 
-tasks.withType<Detekt>().configureEach {
+// Register the task directly until Detekt's plugin stops using Gradle's deprecated
+// ReportingExtension.file and Configuration.setVisible APIs (including in 2.0 alphas).
+val detekt = tasks.register<Detekt>("detekt") {
+    description = "Analyze Kotlin sources with Detekt and its formatting rules."
+    setSource(files("src/main/kotlin", "src/test/kotlin", "src/main/java", "src/test/java"))
+    include("**/*.kt", "**/*.kts")
+    detektClasspath.from(detektCli)
+    pluginClasspath.from(detektPlugins)
+    autoCorrect = true
+    jvmTarget = "1.8"
     reports {
         xml.required.set(false)
         html.required.set(false)
@@ -52,11 +69,11 @@ tasks.withType<Detekt>().configureEach {
     }
 }
 
-detekt {
-    autoCorrect = true
+tasks.check {
+    dependsOn(detekt)
 }
 
-tasks.withType<Test> {
+tasks.withType<Test>().configureEach {
     useJUnitPlatform()
 }
 
@@ -123,8 +140,8 @@ nexusPublishing {
 
 signing {
     if (System.getenv("GITHUB_REPOSITORY") != null) {
-        val signingKey: String? by project
-        val signingPassword: String? by project
+        val signingKey = project.findProperty("signingKey") as String?
+        val signingPassword = project.findProperty("signingPassword") as String?
         useInMemoryPgpKeys(signingKey, signingPassword)
         sign(publishing.publications["mavenJava"])
     }
